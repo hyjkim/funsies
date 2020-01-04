@@ -44,6 +44,6 @@ sfbikes <- bikes %>%
 nrow(sfbikes)
 
 # plot only sf bikes 
-qmplot(lon, lat, data=sfbikes, color=factor(cluster), stat=list("density_2d"), maptype="watercolor")
+qmplot(lon, lat, data=sfbikes, color=factor(cluster), geom=c("point", "density2d"), alpha=0.75)
 
 # ggmap docs https://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
