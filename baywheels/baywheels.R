@@ -5,15 +5,15 @@ library(tidyr)
 library(readr)
 library(jsonlite)
 library(ggmap)
+library(lubridate) 
 
-bw <- read_delim("/Users/jkim/Downloads/201911-baywheels-tripdata.csv", ";")
-
+# Archival trip data
+# bw <- read_delim("/Users/jkim/Downloads/201911-baywheels-tripdata.csv", ";")
 free <- fromJSON("https://gbfs.baywheels.com/gbfs/en/free_bike_status.json")
 bikes <- free$data$bikes
+bikes$datetime <- as_datetime(now())
+write_tsv(bikes, "~/git/funsies/baywheels/free_bikes.tsv", append=T)
 
-oldbikes <- bikes
-free <- fromJSON("https://gbfs.baywheels.com/gbfs/en/free_bike_status.json")
-bikes <- free$data$bikes
 
 nrow(bikes)
 
