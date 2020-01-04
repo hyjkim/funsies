@@ -17,9 +17,6 @@ write_tsv(bikes, "~/git/funsies/baywheels/free_bikes.tsv", append=T)
 
 nrow(bikes)
 
-shared <- bikes$name %in% oldbikes$name
-sum(shared) / length(shared)
-
 #stations <- fromJSON("https://gbfs.baywheels.com/gbfs/en/station_status.json")
 
 # Cluster bikes
