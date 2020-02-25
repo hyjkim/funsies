@@ -23,15 +23,15 @@ nrow(bikes)
 bikes$cluster = kmeans(dplyr::select(bikes, lat, lon), 2)$cluster
 
 # Plot with color
-qmplot(lon, lat, data=bikes, color=factor(cluster))
+#qmplot(lon, lat, data=bikes, color=factor(cluster))
 
 # View lat and lon of bikes
-bikes %>%
-  select(lat, lon, cluster) %>%
-  gather(key, val, -cluster) %>%
-  ggplot(aes(x=val, color=factor(cluster))) +
-  geom_density() +
-  facet_wrap(~ key, scales="free")
+#bikes %>%
+#  select(lat, lon, cluster) %>%
+#  gather(key, val, -cluster) %>%
+#  ggplot(aes(x=val, color=factor(cluster))) +
+#  geom_density() +
+#  facet_wrap(~ key, scales="free")
 
 # filter bikes in sf
 sfbikes <- bikes %>%
@@ -39,8 +39,22 @@ sfbikes <- bikes %>%
   filter(lon < 122.3)
 
 nrow(sfbikes)
-
 # plot only sf bikes 
 qmplot(lon, lat, data=sfbikes, color=factor(cluster), geom=c("point", "density2d"), alpha=0.75)
 
-# ggmap docs https://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+
+# history
+history <- read_tsv("~/git/funsies/baywheels/free_bikes.tsv", col_names=colnames(sfbikes))
+
+history %>%
+  filter(!datetime %in% c("1", "2")) %>%
+  mutate(datetime = parse_date_time(datetime, orders=c("ymdHMS"))) %>%
+  group_by(datetime) %>%
+  summarise(freebikes = n()) %>%
+  ungroup() %>%
+  mutate(hour = hour(datetime)) %>%
+  mutate(commute_time = ifelse((hour >= 7 & hour <= 9) | (hour >= 16 & hour <= 18), T, F)) %>%
+  ggplot(aes(x = datetime, y = freebikes, color=commute_time)) +
+  geom_point() +
+  labs(title = "Baywheels bike availability")
+ 
